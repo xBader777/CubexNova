@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CubexNova Store</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #0f172a;
+      color: white;
+    }
+
+    header {
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      padding: 45px 20px;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 42px;
+      margin-bottom: 10px;
+    }
+
+    header p {
+      color: #e0e7ff;
+      font-size: 18px;
+    }
+
+    nav {
+      background: #020617;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    nav a:hover {
+      color: #60a5fa;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: auto;
+      padding: 40px 20px;
+    }
+
+    .notice {
+      background: #172554;
+      border: 1px solid #3b82f6;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 30px;
+      color: #dbeafe;
+      line-height: 1.5;
+    }
+
+    .section-title {
+      font-size: 30px;
+      margin-bottom: 25px;
+      border-left: 5px solid #3b82f6;
+      padding-left: 12px;
+    }
+
+    .products {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 25px;
+      margin-bottom: 45px;
+    }
+
+    .card {
+      background: #1e293b;
+      border-radius: 15px;
+      padding: 25px;
+      text-align: center;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      transition: 0.2s;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      background: #273449;
+    }
+
+    .card h3 {
+      font-size: 24px;
+      margin-bottom: 12px;
+      color: #93c5fd;
+    }
+
+    .card p {
+      color: #cbd5e1;
+      margin-bottom: 15px;
+      line-height: 1.5;
+    }
+
+    .gold h3 {
+      color: #facc15;
+    }
+
+    .diamond h3 {
+      color: #67e8f9;
+    }
+
+    .emerald h3 {
+      color: #34d399;
+    }
+
+    .cube h3 {
+      color: #c084fc;
+    }
+
+    .price {
+      font-size: 26px;
+      font-weight: bold;
+      color: #22c55e;
+      margin-bottom: 18px;
+    }
+
+    button {
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 12px 18px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: #1d4ed8;
+    }
+
+    .cart {
+      background: #020617;
+      border-radius: 15px;
+      padding: 25px;
+      margin-top: 20px;
+    }
+
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #334155;
+      padding: 12px 0;
+      gap: 10px;
+    }
+
+    .cart-total {
+      font-size: 22px;
+      font-weight: bold;
+      margin-top: 20px;
+      color: #22c55e;
+    }
+
+    .remove {
+      background: #ef4444;
+      padding: 7px 10px;
+      border-radius: 7px;
+    }
+
+    .remove:hover {
+      background: #dc2626;
+    }
+
+    .checkout-box {
+      margin-top: 30px;
+      background: #1e293b;
+      padding: 25px;
+      border-radius: 15px;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px;
+      border-radius: 8px;
+      border: none;
+      margin: 8px 0 15px;
+      background: #334155;
+      color: white;
+      outline: none;
+    }
+
+    label {
+      color: #cbd5e1;
+      font-weight: bold;
+    }
+
+    .pay-paypal {
+      width: 100%;
+      background: #ffc439;
+      color: #111827;
+      font-size: 18px;
+      margin-top: 10px;
+    }
+
+    .pay-paypal:hover {
+      background: #fbbf24;
+    }
+
+    footer {
+      text-align: center;
+      padding: 25px;
+      background: #020617;
+      color: #94a3b8;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <h1>CubexNova Store</h1>
+    <p>Buy ranks, and digital extras</p>
+  </header>
+
+  <nav>
+    <a href="#ranks">Ranks</a>
+    <a href="#other">Other</a>
+    <a href="#cart">Cart</a>
+  </nav>
+
+  <div class="container">
+
+    <div class="notice">
+      Current payment method: PayPal only. PayPal opens in a new tab.
+      After payment, manually check your PayPal account before giving the rank/item.
+    </div>
+
+    <section id="ranks">
+      <h2 class="section-title">Ranks</h2>
+
+      <div class="products">
+        <div class="card gold">
+          <h3>Gold Rank</h3>
+          <p>Includes a Gold rank title, profile badge, and special display color.</p>
+          <div class="price">$3.99</div>
+          <button onclick="addToCart('Gold Rank', 3.99)">Add to Cart</button>
+        </div>
+
+        <div class="card diamond">
+          <h3>Diamond Rank</h3>
+          <p>Includes a Diamond rank title, premium badge, and upgraded display style.</p>
+          <div class="price">$7.99</div>
+          <button onclick="addToCart('Diamond Rank', 7.99)">Add to Cart</button>
+        </div>
+
+        <div class="card emerald">
+          <h3>Emerald Rank</h3>
+          <p>Includes an Emerald rank title, exclusive badge, and custom profile look.</p>
+          <div class="price">$11.99</div>
+          <button onclick="addToCart('Emerald Rank', 11.99)">Add to Cart</button>
+        </div>
+
+        <div class="card cube">
+          <h3>Cube Rank</h3>
+          <p>Includes the Cube rank title, rare badge, and the highest display style.</p>
+          <div class="price">$15.99</div>
+          <button onclick="addToCart('Cube Rank', 15.99)">Add to Cart</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="other">
+      <h2 class="section-title">Other</h2>
+
+      <div class="products">
+        <div class="card">
+          <h3>Guild Create</h3>
+          <p>Unlock the ability to create your own guild.</p>
+          <div class="price">$9.99</div>
+          <button onclick="addToCart('Guild Create', 9.99)">Add to Cart</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="cart">
+      <h2 class="section-title">Your Cart</h2>
+
+      <div class="cart">
+        <div id="cartItems"></div>
+        <div class="cart-total">Total: $<span id="cartTotal">0.00</span></div>
+      </div>
+
+      <div class="checkout-box">
+        <h2>Checkout Details</h2>
+        <br>
+
+        <label>Game Username</label>
+        <input type="text" id="username" placeholder="Enter your game username">
+
+        <label>Email</label>
+        <input type="email" id="email" placeholder="Enter your email">
+
+        <button class="pay-paypal" onclick="checkoutPayPal()">
+          Pay with PayPal
+        </button>
+      </div>
+    </section>
+
+  </div>
+
+  <footer>
+    © 2026 CubexNova Store. All rights reserved.
+  </footer>
+
+  <script>
+    let cart = [];
+
+    const PAYPAL_BASE_LINK = "https://www.paypal.com/paypalme/MohammedAlshboul689";
+
+    function addToCart(name, price) {
+      cart.push({ name, price });
+      updateCart();
+    }
+
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      updateCart();
+    }
+
+    function updateCart() {
+      const cartItems = document.getElementById("cartItems");
+      const cartTotal = document.getElementById("cartTotal");
+
+      cartItems.innerHTML = "";
+
+      let total = 0;
+
+      if (cart.length === 0) {
+        cartItems.innerHTML = "<p>Your cart is empty.</p>";
+      }
+
+      cart.forEach((item, index) => {
+        total += item.price;
+
+        cartItems.innerHTML += `
+          <div class="cart-item">
+            <span>${item.name} - $${item.price.toFixed(2)}</span>
+            <button class="remove" onclick="removeFromCart(${index})">Remove</button>
+          </div>
+        `;
+      });
+
+      cartTotal.textContent = total.toFixed(2);
+    }
+
+    function validateCheckout() {
+      const username = document.getElementById("username").value.trim();
+      const email = document.getElementById("email").value.trim();
+
+      if (cart.length === 0) {
+        alert("Your cart is empty.");
+        return false;
+      }
+
+      if (!username || !email) {
+        alert("Please enter your game username and email.");
+        return false;
+      }
+
+      return true;
+    }
+
+    function getOrderSummary() {
+      const username = document.getElementById("username").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const total = cart.reduce((sum, item) => sum + item.price, 0);
+      const products = cart.map(item => item.name).join(", ");
+
+      return {
+        username,
+        email,
+        total: total.toFixed(2),
+        products
+      };
+    }
+
+    function checkoutPayPal() {
+      if (!validateCheckout()) return;
+
+      const order = getOrderSummary();
+
+      const paypalUrl = PAYPAL_BASE_LINK + "/" + order.total;
+
+      /*
+        PayPal refuses to load inside some previews/iframes.
+        Opening in a new tab fixes the "refused to connect" error.
+      */
+      window.open(paypalUrl, "_blank", "noopener,noreferrer");
+
+      alert(
+        "PayPal opened in a new tab.\n\n" +
+        "Username: " + order.username + "\n" +
+        "Email: " + order.email + "\n" +
+        "Products: " + order.products + "\n" +
+        "Total: $" + order.total + "\n\n" +
+        "After paying, include your username in the PayPal note if possible."
+      );
+    }
+
+    updateCart();
+  </script>
+
+</body>
+</html>
