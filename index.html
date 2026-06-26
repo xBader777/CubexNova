@@ -55,6 +55,15 @@
       color: #60a5fa;
     }
 
+    .cart-count {
+      background: #22c55e;
+      color: #052e16;
+      padding: 2px 7px;
+      border-radius: 999px;
+      font-size: 13px;
+      margin-left: 4px;
+    }
+
     .container {
       max-width: 1100px;
       margin: auto;
@@ -149,11 +158,22 @@
       background: #1d4ed8;
     }
 
+    .added-btn {
+      background: #22c55e !important;
+      color: #052e16 !important;
+    }
+
     .cart {
       background: #020617;
       border-radius: 15px;
       padding: 25px;
       margin-top: 20px;
+      transition: 0.3s;
+    }
+
+    .cart.cart-flash {
+      box-shadow: 0 0 25px rgba(34, 197, 94, 0.6);
+      border: 1px solid #22c55e;
     }
 
     .cart-item {
@@ -217,6 +237,28 @@
       background: #fbbf24;
     }
 
+    .toast {
+      position: fixed;
+      top: 85px;
+      right: 20px;
+      background: #22c55e;
+      color: #052e16;
+      padding: 15px 20px;
+      border-radius: 12px;
+      font-weight: bold;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.35);
+      opacity: 0;
+      transform: translateX(120%);
+      transition: 0.3s;
+      z-index: 999;
+      max-width: 300px;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
     footer {
       text-align: center;
       padding: 25px;
@@ -224,10 +266,29 @@
       color: #94a3b8;
       margin-top: 40px;
     }
+
+    @media (max-width: 600px) {
+      header h1 {
+        font-size: 32px;
+      }
+
+      nav {
+        gap: 12px;
+        font-size: 14px;
+      }
+
+      .toast {
+        right: 10px;
+        left: 10px;
+        max-width: none;
+      }
+    }
   </style>
 </head>
 
 <body>
+
+  <div class="toast" id="toast">Item added to cart</div>
 
   <header>
     <h1>CubexNova Store</h1>
@@ -237,7 +298,7 @@
   <nav>
     <a href="#ranks">Ranks</a>
     <a href="#other">Other</a>
-    <a href="#cart">Cart</a>
+    <a href="#cart">Cart <span class="cart-count" id="cartCount">0</span></a>
   </nav>
 
   <div class="container">
@@ -255,28 +316,28 @@
           <h3>Gold Rank</h3>
           <p>Includes a Gold rank title, profile badge, and special display color.</p>
           <div class="price">$3.99</div>
-          <button onclick="addToCart('Gold Rank', 3.99)">Add to Cart</button>
+          <button onclick="addToCart('Gold Rank', 3.99, this)">Add to Cart</button>
         </div>
 
         <div class="card diamond">
           <h3>Diamond Rank</h3>
           <p>Includes a Diamond rank title, premium badge, and upgraded display style.</p>
           <div class="price">$7.99</div>
-          <button onclick="addToCart('Diamond Rank', 7.99)">Add to Cart</button>
+          <button onclick="addToCart('Diamond Rank', 7.99, this)">Add to Cart</button>
         </div>
 
         <div class="card emerald">
           <h3>Emerald Rank</h3>
           <p>Includes an Emerald rank title, exclusive badge, and custom profile look.</p>
           <div class="price">$11.99</div>
-          <button onclick="addToCart('Emerald Rank', 11.99)">Add to Cart</button>
+          <button onclick="addToCart('Emerald Rank', 11.99, this)">Add to Cart</button>
         </div>
 
         <div class="card cube">
           <h3>Cube Rank</h3>
           <p>Includes the Cube rank title, rare badge, and the highest display style.</p>
           <div class="price">$15.99</div>
-          <button onclick="addToCart('Cube Rank', 15.99)">Add to Cart</button>
+          <button onclick="addToCart('Cube Rank', 15.99, this)">Add to Cart</button>
         </div>
       </div>
     </section>
@@ -289,7 +350,7 @@
           <h3>Guild Create</h3>
           <p>Unlock the ability to create your own guild.</p>
           <div class="price">$9.99</div>
-          <button onclick="addToCart('Guild Create', 9.99)">Add to Cart</button>
+          <button onclick="addToCart('Guild Create', 9.99, this)">Add to Cart</button>
         </div>
       </div>
     </section>
@@ -297,7 +358,7 @@
     <section id="cart">
       <h2 class="section-title">Your Cart</h2>
 
-      <div class="cart">
+      <div class="cart" id="cartBox">
         <div id="cartItems"></div>
         <div class="cart-total">Total: $<span id="cartTotal">0.00</span></div>
       </div>
@@ -326,26 +387,68 @@
 
   <script>
     let cart = [];
+    let toastTimer;
 
     const PAYPAL_BASE_LINK = "https://www.paypal.com/paypalme/MohammedAlshboul689";
 
-    function addToCart(name, price) {
+    function addToCart(name, price, button) {
       cart.push({ name, price });
       updateCart();
+      showAddedFeedback(name, button);
+    }
+
+    function showAddedFeedback(name, button) {
+      showToast(name + " added to cart");
+
+      if (button) {
+        const originalText = button.textContent;
+        button.textContent = "Added!";
+        button.classList.add("added-btn");
+
+        setTimeout(() => {
+          button.textContent = originalText;
+          button.classList.remove("added-btn");
+        }, 1200);
+      }
+
+      const cartBox = document.getElementById("cartBox");
+      cartBox.classList.add("cart-flash");
+
+      setTimeout(() => {
+        cartBox.classList.remove("cart-flash");
+      }, 800);
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+
+      toast.textContent = message;
+      toast.classList.add("show");
+
+      clearTimeout(toastTimer);
+
+      toastTimer = setTimeout(() => {
+        toast.classList.remove("show");
+      }, 2200);
     }
 
     function removeFromCart(index) {
+      const removedItem = cart[index].name;
       cart.splice(index, 1);
       updateCart();
+      showToast(removedItem + " removed from cart");
     }
 
     function updateCart() {
       const cartItems = document.getElementById("cartItems");
       const cartTotal = document.getElementById("cartTotal");
+      const cartCount = document.getElementById("cartCount");
 
       cartItems.innerHTML = "";
 
       let total = 0;
+
+      cartCount.textContent = cart.length;
 
       if (cart.length === 0) {
         cartItems.innerHTML = "<p>Your cart is empty.</p>";
@@ -400,13 +503,8 @@
       if (!validateCheckout()) return;
 
       const order = getOrderSummary();
-
       const paypalUrl = PAYPAL_BASE_LINK + "/" + order.total;
 
-      /*
-        PayPal refuses to load inside some previews/iframes.
-        Opening in a new tab fixes the "refused to connect" error.
-      */
       window.open(paypalUrl, "_blank", "noopener,noreferrer");
 
       alert(
