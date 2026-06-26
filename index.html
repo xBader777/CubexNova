@@ -1,81 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CubexNova Store - Ranks</title>
   <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-
-  <div class="glow-orb orb-1"></div>
-  <div class="glow-orb orb-2"></div>
-  <div class="glow-orb orb-3"></div>
-
-  <div class="toast" id="toast">Item added to cart</div>
+  <div class="toast" id="toast"></div>
 
   <header>
-    <div class="logo-badge">✨ Official Digital Store</div>
+    <div class="badge">✨ Official Digital Store</div>
     <h1>CubexNova Store</h1>
     <p>Buy ranks, and digital extras</p>
   </header>
 
   <nav>
-    <a href="index.html" class="active">Ranks</a>
+    <a class="active" href="index.html">Ranks</a>
     <a href="other.html">Other</a>
-    <a href="cart.html">Cart <span class="cart-count" id="cartCount">0</span></a>
+    <a href="cart.html">Cart <span id="cartCount">0</span></a>
   </nav>
 
-  <main class="container">
-
-    <div class="notice">
-      Current payment method: <strong>PayPal only</strong>. Add your items, then go to the cart page to checkout.
-    </div>
-
-    <section>
-      <h2 class="section-title">Ranks</h2>
-
-      <div class="products">
-        <div class="card gold">
-          <div class="rank-icon">G</div>
-          <h3>Gold Rank</h3>
-          <p>Includes a Gold rank title, profile badge, and special display color.</p>
-          <div class="price">$3.99</div>
-          <button onclick="addToCart('Gold Rank', 3.99, this)">Add to Cart</button>
-        </div>
-
-        <div class="card diamond">
-          <div class="rank-icon">D</div>
-          <h3>Diamond Rank</h3>
-          <p>Includes a Diamond rank title, premium badge, and upgraded display style.</p>
-          <div class="price">$7.99</div>
-          <button onclick="addToCart('Diamond Rank', 7.99, this)">Add to Cart</button>
-        </div>
-
-        <div class="card emerald">
-          <div class="rank-icon">E</div>
-          <h3>Emerald Rank</h3>
-          <p>Includes an Emerald rank title, exclusive badge, and custom profile look.</p>
-          <div class="price">$11.99</div>
-          <button onclick="addToCart('Emerald Rank', 11.99, this)">Add to Cart</button>
-        </div>
-
-        <div class="card cube">
-          <div class="rank-icon">C</div>
-          <h3>Cube Rank</h3>
-          <p>Includes the Cube rank title, rare badge, and the highest display style.</p>
-          <div class="price">$15.99</div>
-          <button onclick="addToCart('Cube Rank', 15.99, this)">Add to Cart</button>
-        </div>
-      </div>
-    </section>
-
+  <main>
+    <div class="notice">Current payment method: <b>PayPal only</b>.</div>
+    <h2>Ranks</h2>
+    <div class="products" id="ranksProducts"></div>
   </main>
 
-  <footer>
-    © 2026 CubexNova Store. All rights reserved.
-  </footer>
+  <footer>© 2026 CubexNova Store. All rights reserved.</footer>
 
   <script src="store.js"></script>
 </body>
