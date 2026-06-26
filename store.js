@@ -1,7 +1,7 @@
 const PAYPAL_BASE_LINK = "https://www.paypal.com/paypalme/MohammedAlshboul689";
 
-const ADMIN_USERNAME = "admin";
-const ADMIN_PASSWORD = "change-this-password";
+const ADMIN_USERNAME = "onlyadmin";
+const ADMIN_PASSWORD = "onlyadmin";
 
 const CART_KEY = "cubexnovaCart";
 const PRODUCTS_KEY = "cubexnovaProducts";
