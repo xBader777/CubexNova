@@ -1,4 +1,5 @@
 const PAYPAL_BASE_LINK = "https://www.paypal.com/paypalme/MohammedAlshboul689";
+const TEST_MODE = true;
 
 const CART_KEY = "cubexnovaCart";
 
@@ -198,6 +199,31 @@ function checkoutPayPal() {
 
   const total = data.reduce((sum, item) => sum + Number(item.price), 0).toFixed(2);
   const names = data.map(i => i.name).join(", ");
+
+  if (TEST_MODE) {
+    alert(
+      "TEST MODE ENABLED\n\n" +
+      "No money was charged.\n\n" +
+      "Username: " + username + "\n" +
+      "Email: " + email + "\n" +
+      "Products: " + names + "\n" +
+      "Total: $" + total + "\n\n" +
+      "To test giving this purchase in Minecraft, run:\n" +
+      "/cnstore give " + username + " gold\n" +
+      "/cnstore give " + username + " diamond\n" +
+      "/cnstore give " + username + " emerald\n" +
+      "/cnstore give " + username + " cube\n" +
+      "/cnstore give " + username + " guild_create"
+    );
+
+    console.log("TEST PURCHASE");
+    console.log("Username:", username);
+    console.log("Email:", email);
+    console.log("Products:", names);
+    console.log("Total:", total);
+
+    return;
+  }
 
   window.open(PAYPAL_BASE_LINK + "/" + total, "_blank", "noopener,noreferrer");
 
