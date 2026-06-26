@@ -1,69 +1,46 @@
 const PAYPAL_BASE_LINK = "https://www.paypal.com/paypalme/MohammedAlshboul689";
 
-const ADMIN_USERNAME = "onlyadmin";
-const ADMIN_PASSWORD = "onlyadmin";
-
 const CART_KEY = "cubexnovaCart";
-const PRODUCTS_KEY = "cubexnovaProducts";
-const ADMIN_KEY = "cubexnovaAdmin";
 
 let toastTimer;
 
-const defaultProducts = [
+const products = [
   {
     id: "gold",
     category: "Ranks",
     name: "Gold Rank",
     price: 3.99,
-    material: "GOLD_INGOT",
-    description: "Includes a Gold rank title, profile badge, and special display color.",
-    commands: ["lp user {player} parent set gold"]
+    description: "Includes a Gold rank title, profile badge, and special display color."
   },
   {
     id: "diamond",
     category: "Ranks",
     name: "Diamond Rank",
     price: 7.99,
-    material: "DIAMOND",
-    description: "Includes a Diamond rank title, premium badge, and upgraded display style.",
-    commands: ["lp user {player} parent set diamond"]
+    description: "Includes a Diamond rank title, premium badge, and upgraded display style."
   },
   {
     id: "emerald",
     category: "Ranks",
     name: "Emerald Rank",
     price: 11.99,
-    material: "EMERALD",
-    description: "Includes an Emerald rank title, exclusive badge, and custom profile look.",
-    commands: ["lp user {player} parent set emerald"]
+    description: "Includes an Emerald rank title, exclusive badge, and custom profile look."
   },
   {
     id: "cube",
     category: "Ranks",
     name: "Cube Rank",
     price: 15.99,
-    material: "PURPLE_SHULKER_BOX",
-    description: "Includes the Cube rank title, rare badge, and the highest display style.",
-    commands: ["lp user {player} parent set cube"]
+    description: "Includes the Cube rank title, rare badge, and the highest display style."
   },
   {
     id: "guild_create",
     category: "Other",
     name: "Guild Create",
     price: 9.99,
-    material: "NETHER_STAR",
-    description: "Unlock the ability to create your own guild.",
-    commands: ["lp user {player} permission set cubexnova.guild.create true"]
+    description: "Unlock the ability to create your own guild."
   }
 ];
-
-function products() {
-  return JSON.parse(localStorage.getItem(PRODUCTS_KEY)) || structuredClone(defaultProducts);
-}
-
-function saveProducts(data) {
-  localStorage.setItem(PRODUCTS_KEY, JSON.stringify(data, null, 2));
-}
 
 function cart() {
   return JSON.parse(localStorage.getItem(CART_KEY)) || [];
@@ -111,17 +88,15 @@ function renderProducts() {
 
   if (!ranks && !other) return;
 
-  const data = products();
-
   if (ranks) {
-    ranks.innerHTML = data
+    ranks.innerHTML = products
       .filter(p => p.category === "Ranks")
       .map(cardHTML)
       .join("");
   }
 
   if (other) {
-    other.innerHTML = data
+    other.innerHTML = products
       .filter(p => p.category === "Other")
       .map(cardHTML)
       .join("");
@@ -142,7 +117,12 @@ function cardHTML(p) {
 
 function addToCart(name, price, btn) {
   const data = cart();
-  data.push({ name, price: Number(price) });
+
+  data.push({
+    name: name,
+    price: Number(price)
+  });
+
   saveCart(data);
   updateCartCount();
 
@@ -150,6 +130,7 @@ function addToCart(name, price, btn) {
     const old = btn.textContent;
     btn.textContent = "Added!";
     btn.classList.add("added");
+
     setTimeout(() => {
       btn.textContent = old;
       btn.classList.remove("added");
@@ -176,6 +157,7 @@ function renderCart() {
 
   items.innerHTML = data.map((item, i) => {
     total += Number(item.price);
+
     return `
       <div class="cart-item">
         <span>${escapeHTML(item.name)} - $${Number(item.price).toFixed(2)}</span>
@@ -190,8 +172,10 @@ function renderCart() {
 function removeItem(index) {
   const data = cart();
   const removed = data[index]?.name || "Item";
+
   data.splice(index, 1);
   saveCart(data);
+
   renderCart();
   updateCartCount();
   toast("Removed " + removed);
@@ -227,226 +211,6 @@ function checkoutPayPal() {
   );
 }
 
-/* Admin Panel */
-
-function createAdmin() {
-  const div = document.createElement("div");
-
-  div.innerHTML = `
-    <button class="admin-open" onclick="openAdmin()">Admin Panel</button>
-
-    <div class="admin-overlay" id="adminOverlay">
-      <div class="admin-box">
-        <div class="admin-top">
-          <h2>Admin Panel</h2>
-          <button class="remove" onclick="closeAdmin()">Close</button>
-        </div>
-
-        <div id="adminLogin">
-          <div class="admin-warning">
-            Store is public. Admin login is not fully secure on GitHub Pages.
-          </div>
-
-          <label>Username</label>
-          <input id="adminUser" type="text">
-
-          <label>Password</label>
-          <input id="adminPass" type="password">
-
-          <button onclick="loginAdmin()">Login</button>
-        </div>
-
-        <div id="adminEditor" class="hidden">
-          <div class="admin-warning">
-            Edit names, prices, descriptions, materials, and plugin commands.
-          </div>
-
-          <div class="admin-grid" id="adminGrid"></div>
-
-          <br>
-          <button onclick="saveAdmin()">Save Changes</button>
-          <button onclick="downloadConfig()">Download config.yml</button>
-          <button onclick="copyConfig()">Copy config.yml</button>
-          <button onclick="resetAdmin()">Reset Defaults</button>
-          <button onclick="logoutAdmin()">Logout</button>
-
-          <pre id="configPreview"></pre>
-        </div>
-      </div>
-    </div>
-  `;
-
-  document.body.appendChild(div);
-}
-
-function openAdmin() {
-  document.getElementById("adminOverlay").classList.add("show");
-
-  if (sessionStorage.getItem(ADMIN_KEY) === "yes") {
-    showEditor();
-  } else {
-    showLogin();
-  }
-}
-
-function closeAdmin() {
-  document.getElementById("adminOverlay").classList.remove("show");
-}
-
-function showLogin() {
-  document.getElementById("adminLogin").classList.remove("hidden");
-  document.getElementById("adminEditor").classList.add("hidden");
-}
-
-function showEditor() {
-  document.getElementById("adminLogin").classList.add("hidden");
-  document.getElementById("adminEditor").classList.remove("hidden");
-  renderAdmin();
-}
-
-function loginAdmin() {
-  const u = document.getElementById("adminUser").value.trim();
-  const p = document.getElementById("adminPass").value.trim();
-
-  if (u === ADMIN_USERNAME && p === ADMIN_PASSWORD) {
-    sessionStorage.setItem(ADMIN_KEY, "yes");
-    showEditor();
-  } else {
-    alert("Wrong username or password.");
-  }
-}
-
-function logoutAdmin() {
-  sessionStorage.removeItem(ADMIN_KEY);
-  showLogin();
-}
-
-function renderAdmin() {
-  const grid = document.getElementById("adminGrid");
-  const data = products();
-
-  grid.innerHTML = data.map((p, i) => `
-    <div class="admin-product">
-      <h3>${escapeHTML(p.name)}</h3>
-
-      <label>ID</label>
-      <input value="${escapeHTML(p.id)}" disabled>
-
-      <label>Category</label>
-      <select id="cat${i}">
-        <option ${p.category === "Ranks" ? "selected" : ""}>Ranks</option>
-        <option ${p.category === "Other" ? "selected" : ""}>Other</option>
-      </select>
-
-      <label>Name</label>
-      <input id="name${i}" value="${escapeHTML(p.name)}">
-
-      <label>Price</label>
-      <input id="price${i}" type="number" step="0.01" value="${Number(p.price).toFixed(2)}">
-
-      <label>Minecraft Material</label>
-      <input id="mat${i}" value="${escapeHTML(p.material)}">
-
-      <label>Description</label>
-      <textarea id="desc${i}">${escapeHTML(p.description)}</textarea>
-
-      <label>Commands</label>
-      <textarea id="cmd${i}">${escapeHTML(p.commands.join("\n"))}</textarea>
-    </div>
-  `).join("");
-
-  updateConfigPreview();
-}
-
-function readAdmin() {
-  const old = products();
-
-  return old.map((p, i) => ({
-    id: p.id,
-    category: document.getElementById("cat" + i).value,
-    name: document.getElementById("name" + i).value.trim() || p.name,
-    price: parseFloat(document.getElementById("price" + i).value) || p.price,
-    material: document.getElementById("mat" + i).value.trim() || "CHEST",
-    description: document.getElementById("desc" + i).value.trim(),
-    commands: document.getElementById("cmd" + i).value
-      .split("\n")
-      .map(x => x.trim())
-      .filter(Boolean)
-      .map(x => x.startsWith("/") ? x.substring(1) : x)
-  }));
-}
-
-function saveAdmin() {
-  saveProducts(readAdmin());
-  renderProducts();
-  updateConfigPreview();
-  toast("Saved changes");
-}
-
-function resetAdmin() {
-  if (!confirm("Reset all products?")) return;
-  localStorage.removeItem(PRODUCTS_KEY);
-  renderAdmin();
-  renderProducts();
-}
-
-function configYml() {
-  const data = readAdmin();
-
-  let yml = `settings:\n  prefix: "&8[&bCubexNova Store&8] &r"\n\nproducts:\n`;
-
-  data.forEach(p => {
-    yml += `  ${p.id}:\n`;
-    yml += `    display-name: "${yaml(colorName(p))}"\n`;
-    yml += `    material: "${yaml(p.material)}"\n`;
-    yml += `    price: ${Number(p.price).toFixed(2)}\n`;
-    yml += `    commands:\n`;
-
-    if (p.commands.length === 0) {
-      yml += `      - "say No commands configured for {player}"\n`;
-    } else {
-      p.commands.forEach(cmd => {
-        yml += `      - "${yaml(cmd)}"\n`;
-      });
-    }
-
-    yml += `\n`;
-  });
-
-  return yml;
-}
-
-function colorName(p) {
-  if (p.id === "gold") return "&6" + p.name;
-  if (p.id === "diamond") return "&b" + p.name;
-  if (p.id === "emerald") return "&a" + p.name;
-  if (p.id === "cube") return "&d" + p.name;
-  if (p.id === "guild_create") return "&e" + p.name;
-  return p.name;
-}
-
-function updateConfigPreview() {
-  const pre = document.getElementById("configPreview");
-  if (pre) pre.textContent = configYml();
-}
-
-function downloadConfig() {
-  saveAdmin();
-  const blob = new Blob([configYml()], { type: "text/yaml" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "config.yml";
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
-function copyConfig() {
-  saveAdmin();
-  navigator.clipboard.writeText(configYml());
-  alert("config.yml copied.");
-}
-
 function escapeHTML(text) {
   return String(text)
     .replaceAll("&", "&amp;")
@@ -457,19 +221,12 @@ function escapeHTML(text) {
 }
 
 function escapeJS(text) {
-  return String(text).replace(/\\/g, "\\\\").replace(/'/g, "\\'");
+  return String(text)
+    .replace(/\\/g, "\\\\")
+    .replace(/'/g, "\\'");
 }
-
-function yaml(text) {
-  return String(text).replace(/\\/g, "\\\\").replace(/"/g, '\\"');
-}
-
-document.addEventListener("input", e => {
-  if (e.target.closest("#adminEditor")) updateConfigPreview();
-});
 
 document.addEventListener("DOMContentLoaded", () => {
-  createAdmin();
   updateCartCount();
   renderProducts();
   renderCart();
